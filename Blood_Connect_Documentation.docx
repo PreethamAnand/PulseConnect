@@ -1,0 +1,642 @@
+# PulseConnect - AI-Powered Blood & Plasma Donation Platform
+
+## Table of Contents
+1. Introduction
+2. Technology Stack
+3. Project Structure
+4. Authentication System
+5. User Roles and Permissions
+6. Main Features
+   - Dashboard
+   - Donor Search
+   - Blood & Plasma Requests
+   - Emergency Services
+   - Hospital Integration
+   - Plasma Center
+   - Messaging System
+   - Map Integration
+   - User Profile Management
+   - Settings
+   - Blockchain Integration
+   - AI Features
+7. Navigation and UI Components
+8. Database Structure
+9. API Integrations
+10. Execution Flow
+11. Recent Updates & New Features
+12. Conclusion
+
+## 1. Introduction
+
+PulseConnect (formerly BloodConnect) is a comprehensive AI-powered blood and plasma donation management platform designed to connect donors with recipients and hospitals. The application facilitates blood donation requests, plasma therapy tracking, donor searches, emergency blood needs, hospital integrations, and blockchain verification to streamline the blood donation process.
+
+The platform aims to solve critical challenges in blood donation management by:
+- Connecting donors with recipients in real-time
+- Providing emergency blood and plasma request services
+- Offering hospital integration for better coordination
+- Maintaining donor and recipient profiles with AI-powered eligibility prediction
+- Tracking blood and plasma availability statistics
+- Implementing blockchain verification for transparency
+- Supporting both blood and plasma donation workflows
+
+## 2. Technology Stack
+
+The PulseConnect application is built using modern web technologies:
+
+- **Frontend Framework**: React with TypeScript
+- **UI Component Library**: Shadcn UI (based on Radix UI)
+- **Styling**: Tailwind CSS
+- **State Management**: React Context API
+- **Routing**: React Router DOM
+- **Authentication**: Supabase Authentication with 2FA/OTP
+- **Database**: Supabase (PostgreSQL)
+- **Real-time Database**: Firebase Firestore
+- **File Storage**: Firebase Storage
+- **Blockchain**: Polygon (Matic) with Ethers.js
+- **Charts and Visualization**: Recharts
+- **Form Handling**: React Hook Form with Zod validation
+- **Build Tool**: Vite
+- **Package Manager**: npm/bun
+
+## 3. Project Structure
+
+The project follows a modular structure with clear separation of concerns:
+
+- **src/components**: Reusable UI components
+  - **layout**: Layout components (MainLayout, Navbar, Sidebar)
+  - **ui**: Shadcn UI components
+  - Authentication components (EnhancedLogin, OTPVerification)
+  - ProtectedRoute for route protection
+  - ChatModal for real-time messaging
+  
+- **src/contexts**: Context providers for state management
+  - AuthContext for authentication state
+
+- **src/data**: Mock data for development and testing
+
+- **src/hooks**: Custom React hooks
+  - use-mobile for responsive design
+  - use-toast for toast notifications
+  - useProfile for user profile management
+
+- **src/integrations**: External service integrations
+  - Supabase client configuration and types
+  - Firebase client for real-time features
+  - Blockchain integration (Polygon)
+
+- **src/lib**: Utility functions
+  - Blockchain verification functions
+  - Hospital management functions
+  - Appointment management functions
+
+- **src/pages**: Application pages
+  - Main user pages (Dashboard, DonorSearch, etc.)
+  - Authentication pages (Auth, Login, HospitalAuth)
+  - Hospital-specific pages (HospitalDashboard)
+  - Specialized pages (PlasmaCenter, Awareness, Request)
+
+## 4. Authentication System
+
+The application implements a comprehensive authentication system using Supabase:
+
+### Authentication Methods:
+- Email/Password authentication with 2FA
+- OTP verification via email
+- Hospital-specific authentication
+- Guest access mode (removed from donor login)
+
+### Authentication Flow:
+1. User navigates to login/signup page
+2. User enters credentials and phone number (for signup)
+3. For email/password:
+   - Login: Credentials are verified against Supabase auth
+   - Signup: New user record is created with profile information
+4. OTP verification is sent to email for additional security
+5. On successful authentication, user session is established
+6. Protected routes become accessible
+7. Session persistence is managed through Supabase
+
+### Key Authentication Features:
+- Session management
+- Protected routes
+- User profile data storage
+- Email-based OTP verification
+- Hospital-specific authentication flow
+- Two-factor authentication support
+- Logout functionality
+
+## 5. User Roles and Permissions
+
+The application supports multiple user roles:
+
+- **Regular Users**: Individual donors or recipients
+  - Can search for donors
+  - Can create blood and plasma requests
+  - Can manage their profile
+  - Can view hospitals and blood availability
+  - Can donate blood/plasma through requests
+  - Can chat with hospitals in real-time
+
+- **Hospital Users**: Hospital staff accounts
+  - Can manage blood and plasma inventory
+  - Can create urgent blood/plasma requests
+  - Can view donor database
+  - Can accept donor appointments
+  - Can manage cooldown periods
+  - Have access to hospital-specific dashboard
+  - Can verify donations on blockchain
+
+- **Guest Users**: Unauthenticated users with limited access
+  - Can view basic information
+  - Cannot access protected features
+  - Limited dashboard view
+
+## 6. Main Features
+
+### Dashboard
+The Dashboard provides an overview of key metrics and activities:
+
+- **Blood Statistics Cards**:
+  - Total donors count with available donors
+  - Pending blood requests
+  - Critical requests requiring immediate attention
+  - Recent blood donations
+
+- **Blood Type Availability Chart**:
+  - Visual representation of available vs. required blood by type
+  - Interactive chart with tooltips showing exact numbers
+
+- **Request Urgency Distribution**:
+  - Bar chart showing distribution of requests by urgency level
+  - Categories: Low, Medium, High, Emergency
+
+- **Plasma Availability Tab**:
+  - Plasma inventory tracking
+  - Plasma type distribution charts
+  - Plasma therapy statistics
+
+- **Recent Activity Feed**:
+  - Latest blood and plasma requests
+  - Recent donor registrations
+  - Matched donations
+
+- **Blockchain Verification**:
+  - Verify donations on Polygon blockchain
+  - Immutable transaction records
+
+### Donor Search
+The Donor Search feature allows users to find compatible blood donors:
+
+- **Search Filters**:
+  - Blood type (A+, A-, B+, B-, AB+, AB-, O+, O-)
+  - Location radius
+  - Availability status
+  - Last donation date
+
+- **Search Results**:
+  - Donor cards with key information
+  - Contact options with real-time chat
+  - Distance from user
+  - Availability indicator
+
+- **Quick Actions**:
+  - Contact donor button (opens chat modal)
+  - Request blood button
+  - Real-time messaging integration
+
+- **Live Data Integration**:
+  - Fetches real donor data from Supabase
+  - Filters out unavailable donors
+  - Real-time availability updates
+
+### Blood & Plasma Requests
+The Blood & Plasma Requests feature manages donation requests:
+
+- **Unified Request Creation**:
+  - Blood or plasma type selection
+  - Component type selection (for plasma)
+  - Quantity needed
+  - Urgency level selection
+  - Hospital selection
+  - Patient details
+  - Additional notes
+
+- **Request Management**:
+  - View all requests from registered hospitals only
+  - Filter by status (Pending, Matched, Completed, Cancelled)
+  - Sort by date, urgency, or blood type
+  - Real-time updates
+
+- **Donate Button Functionality**:
+  - Creates appointments when clicked
+  - Sends requests to hospitals
+  - Validates hospital registration
+  - Shows success/error notifications
+
+- **Request Details**:
+  - Complete request information
+  - Matched donors list
+  - Status updates
+  - Communication history
+
+### Emergency Services
+The Emergency feature provides urgent blood request handling:
+
+- **Emergency Request Creation**:
+  - Streamlined form for quick submission
+  - High-priority flagging
+  - Immediate notification to nearby donors
+  - Hospital emergency room coordination
+
+- **SOS Button**:
+  - One-click emergency request
+  - Location tracking for nearest help
+  - Automatic notification to closest hospitals
+
+- **Emergency Contact List**:
+  - Quick access to emergency contacts
+  - Direct call/message options
+  - Nearby hospital contacts
+
+### Hospital Integration
+The Hospital Integration feature connects hospitals with the platform:
+
+- **Hospital Dashboard**:
+  - Blood and plasma inventory management
+  - Donor database access
+  - Request management
+  - Staff coordination
+  - Appointment management
+  - Blockchain verification
+
+- **Hospital Registration**:
+  - Hospital profile creation
+  - Staff account management
+  - Verification process
+
+- **Blood Bank Management**:
+  - Inventory tracking
+  - Expiration date monitoring
+  - Shortage alerts
+
+- **Appointment System**:
+  - Accept donor appointments
+  - Set donor cooldown periods
+  - Track appointment status
+
+### Plasma Center
+The Plasma Center is a specialized module for plasma management:
+
+- **Plasma Inventory**:
+  - Track plasma types and quantities
+  - Monitor component status
+  - Track extraction and expiry dates
+
+- **Plasma Requests**:
+  - Manage plasma-specific requests
+  - Track therapy requirements
+  - Monitor patient conditions
+
+- **Therapy Tracker**:
+  - Record plasma therapy sessions
+  - Track patient progress
+  - Monitor treatment outcomes
+
+- **Blockchain Status**:
+  - Verify plasma donations on blockchain
+  - Track immutable records
+
+### Messaging System
+The Messaging feature facilitates real-time communication:
+
+- **Real-time Chat**:
+  - Firebase Firestore integration
+  - Instant message delivery
+  - Typing indicators
+  - Read receipts
+
+- **Chat Features**:
+  - Emoji picker
+  - Image upload support
+  - Auto-scroll to latest messages
+  - Unread message indicators
+
+- **Conversation Management**:
+  - Contact donor functionality
+  - Hospital-donor communication
+  - Message history
+  - Notification system
+
+### Map Integration
+The Map feature provides location-based services:
+
+- **Donor Map**:
+  - Nearby donor locations
+  - Blood type filtering
+  - Distance radius adjustment
+
+- **Hospital Map**:
+  - Hospital locations
+  - Blood bank availability
+  - Emergency services
+
+- **Route Planning**:
+  - Directions to hospitals/donors
+  - Estimated travel time
+  - Transportation options
+
+### User Profile Management
+The Profile feature allows users to manage their information:
+
+- **Personal Information**:
+  - Name, contact details
+  - Blood type
+  - Medical history
+  - Donation history
+
+- **Donation Preferences**:
+  - Availability status
+  - Notification settings
+  - Privacy controls
+  - Cooldown tracking
+
+- **AI Eligibility Prediction**:
+  - Green/yellow/red eligibility indicators
+  - Based on hemoglobin, platelet count, age
+  - Medical condition analysis
+
+- **Achievement Badges**:
+  - Donation milestones
+  - Community contribution recognition
+  - Special achievements
+
+### Settings
+The Settings feature provides application configuration:
+
+- **Account Settings**:
+  - Password change
+  - Email update
+  - Account deletion
+
+- **Notification Preferences**:
+  - Email notifications
+  - Push notifications
+  - SMS alerts
+
+- **Privacy Controls**:
+  - Profile visibility
+  - Location sharing
+  - Contact permissions
+
+- **Theme Settings**:
+  - Light/dark mode
+  - Accessibility options
+  - Font size adjustment
+
+### Blockchain Integration
+The Blockchain feature provides transparency and verification:
+
+- **Polygon Integration**:
+  - Immutable donation records
+  - Transaction verification
+  - Public ledger access
+
+- **Donation Tracking**:
+  - Each donation recorded on blockchain
+  - Donor and hospital information
+  - Timestamp and status tracking
+
+- **Verification System**:
+  - "Verify on Blockchain" buttons
+  - Transaction hash storage
+  - Public verification
+
+### AI Features
+The AI system provides intelligent predictions and recommendations:
+
+- **Eligibility Prediction**:
+  - Random Forest model for plasma eligibility
+  - Based on health parameters
+  - Visual indicators (green/yellow/red)
+
+- **Smart Matching**:
+  - AI-powered donor matching
+  - Compatibility analysis
+  - Optimal pairing suggestions
+
+## 7. Navigation and UI Components
+
+### Main Navigation
+- **Top Navigation Bar**:
+  - Logo/Home button
+  - Main navigation links
+  - User profile dropdown
+  - Notification bell with unread count
+
+- **Sidebar Navigation** (on desktop):
+  - Dashboard link
+  - Donor Search link
+  - Blood Requests link
+  - Emergency link
+  - Hospitals link
+  - Plasma Center link
+  - Map link
+  - Messages link
+  - Profile link
+  - Settings link
+
+- **Bottom Navigation** (on mobile):
+  - Home icon
+  - Search icon
+  - Emergency icon
+  - Profile icon
+  - Menu icon for additional options
+
+### UI Components
+- **Cards**: Used for displaying information blocks
+- **Tabs**: For organizing content in different views
+- **Buttons**: Primary, secondary, and tertiary actions
+- **Forms**: Input fields, dropdowns, checkboxes
+- **Modals**: For confirmations and focused tasks
+- **Toasts**: For notifications and alerts
+- **Badges**: For status indicators
+- **Charts**: For data visualization
+- **Maps**: For location-based features
+- **Avatars**: For user profiles
+- **Dropdowns**: For menu options
+- **Toggle Switches**: For binary settings
+- **OTP Input**: For verification codes
+- **Chat Components**: For real-time messaging
+
+## 8. Database Structure
+
+The application uses Supabase (PostgreSQL) with the following main tables:
+
+### Core Tables:
+- **users**: User account information
+  - id, email, password_hash, created_at, updated_at
+
+- **profiles**: Extended user profile data
+  - user_id, first_name, last_name, blood_type, phone, address, latitude, longitude, is_donor, last_donation_date, next_eligible_date, donation_type, is_mobile_verified, two_factor_enabled
+
+- **hospitals**: Hospital information
+  - id, name, address, contact, verified, created_at
+
+### Request Tables:
+- **requests**: Unified blood and plasma requests
+  - id, requester_id, request_type, blood_group, quantity_ml, urgency, patient_name, hospital_name, location, notes, status, component_type, condition, created_at
+
+- **appointments**: Donor-hospital appointments
+  - id, donor_id, hospital_id, request_id, donation_type, appointment_date, status, created_at
+
+### Plasma Tables:
+- **plasma_donations**: Plasma donation records
+  - id, donor_id, hospital_id, plasma_type, component_status, extracted_date, expiry_date, status, created_at
+
+- **plasma_inventory**: Hospital plasma inventory
+  - id, hospital_id, plasma_type, units, component_status, extracted_date, expiry_date, created_at
+
+- **plasma_requests**: Plasma-specific requests
+  - id, requester_id, plasma_type, component_type, quantity_ml, urgency, patient_name, hospital_id, condition, status, created_at
+
+- **plasma_therapy_logs**: Therapy tracking
+  - id, patient_id, plasma_type, therapy_date, condition, outcome, notes, created_at
+
+### Communication Tables:
+- **conversations**: Chat conversations (Firebase)
+  - conversation_id, sender_id, receiver_id, message, timestamp, type, read
+
+- **otp_verifications**: OTP verification records
+  - id, email, otp_code, purpose, user_id, hospital_id, expires_at, is_used, created_at
+
+### Blockchain Tables:
+- **blockchain_ledger**: Blockchain transaction records
+  - id, donor_id, hospital_id, donation_type, tx_hash, network, status, created_at
+
+## 9. API Integrations
+
+The application integrates with several external services:
+
+- **Supabase Authentication**: For user authentication and management
+- **Supabase Database**: For data storage and retrieval
+- **Firebase Firestore**: For real-time messaging
+- **Firebase Storage**: For file uploads
+- **Polygon Blockchain**: For immutable transaction records
+- **Ethers.js**: For blockchain interactions
+- **Mapping Services**: For location-based features
+- **Notification Services**: For push notifications
+- **Email Services**: For OTP delivery
+
+## 10. Execution Flow
+
+### User Registration and Login Flow:
+1. User navigates to the homepage
+2. User clicks "Sign Up" or "Login" button
+3. User enters credentials and phone number (for signup)
+4. OTP verification is sent to email
+5. User enters OTP code for verification
+6. On successful authentication, user is redirected to the dashboard
+7. Protected routes become accessible
+
+### Blood/Plasma Request Flow:
+1. User navigates to Blood Requests page
+2. User clicks "Create New Request" button
+3. User selects blood or plasma type
+4. User fills out request form with details
+5. User submits the request
+6. System validates hospital registration
+7. Request appears in hospital dashboard
+8. Hospital can accept and manage the request
+
+### Donation Flow:
+1. Donor sees blood/plasma requests from registered hospitals
+2. Donor clicks "Donate" button on a request
+3. System creates appointment and sends to hospital
+4. Hospital receives appointment in their dashboard
+5. Hospital accepts appointment
+6. Donor cooldown period is set (56 days for blood, 14 days for plasma)
+7. Donation is recorded on blockchain
+
+### Hospital Management Flow:
+1. Hospital staff logs into hospital dashboard
+2. Hospital manages blood/plasma inventory
+3. Hospital views incoming appointments
+4. Hospital accepts appointments
+5. Hospital marks donations as received
+6. Donor cooldown is automatically updated
+
+### Real-time Chat Flow:
+1. User clicks "Contact Donor" in search results
+2. Chat modal opens with real-time messaging
+3. Messages are sent via Firebase Firestore
+4. Both parties see messages instantly
+5. Unread message indicators show in navigation
+
+## 11. Recent Updates & New Features
+
+### Major Updates (Latest Version):
+
+#### Plasma Management Module:
+- Added dedicated Plasma Center with inventory tracking
+- Plasma-specific database tables and workflows
+- Plasma therapy tracking and monitoring
+- Separate plasma donation cooldown (14 days vs 56 days for blood)
+
+#### Blockchain Integration:
+- Polygon (Matic) blockchain integration
+- Immutable donation records
+- "Verify on Blockchain" buttons in dashboards
+- Transaction hash storage and verification
+
+#### Enhanced Authentication:
+- Email-based OTP verification
+- Two-factor authentication support
+- Removed guest login from donor authentication
+- Enhanced security measures
+
+#### Real-time Messaging:
+- Firebase Firestore integration
+- Real-time chat between donors and hospitals
+- Image upload support
+- Typing indicators and read receipts
+
+#### Hospital Acknowledgment System:
+- Appointment management system
+- Automatic donor cooldown calculation
+- Hospital acceptance workflow
+- 90-day cooldown for accepted appointments
+
+#### UI/UX Improvements:
+- Updated homepage with base44 design
+- Educational content integration
+- Blood vs plasma comparison tables
+- Enhanced navigation and user experience
+
+#### Data Validation:
+- Hospital registration validation
+- Request filtering by registered hospitals
+- Real-time data integration
+- Removed all mock/fake data
+
+#### AI Features:
+- Plasma eligibility prediction
+- Smart donor matching
+- Health status indicators
+
+## 12. Conclusion
+
+PulseConnect is a comprehensive, AI-powered platform that addresses critical needs in blood and plasma donation management. The application provides a user-friendly interface for donors, recipients, and hospitals to coordinate blood donation activities efficiently while maintaining transparency through blockchain verification.
+
+Key strengths of the platform include:
+- Real-time donor matching with AI
+- Emergency request handling
+- Hospital integration with appointment management
+- Plasma donation and therapy tracking
+- Blockchain verification for transparency
+- Real-time messaging system
+- Comprehensive tracking and statistics
+- AI-powered eligibility prediction
+
+The modular architecture allows for future expansion and feature enhancements while maintaining a clean, maintainable codebase. The integration of modern technologies like blockchain, AI, and real-time messaging positions PulseConnect as a cutting-edge solution in the healthcare technology space.
+
+The platform successfully bridges the gap between traditional blood donation systems and modern technology, providing a seamless experience for all stakeholders while ensuring data integrity and transparency through blockchain verification.
