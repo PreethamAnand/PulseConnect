@@ -1,73 +1,104 @@
-# Welcome to your Lovable project
+// ...existing code...
+# Blood Connect
 
-## Project info
+A lightweight web app to connect blood donors and recipients. Built with Vite, React, TypeScript, Tailwind CSS and shadcn-ui. Designed for fast local development and easy deployment.
 
-**URL**: https://lovable.dev/projects/a68818cf-7add-4639-a40a-c4decfd9ecc0
+## Project overview
 
-## How can I edit this code?
+Blood Connect helps users:
+- Register as donors or requesters
+- Search for donors by blood group and location
+- View donor profiles and availability
+- (Optional) Admin dashboard to manage users and requests
 
-There are several ways of editing your application.
+This repository contains the frontend application. Backend or AI components (if any) are separate or integrated via APIs.
 
-**Use Lovable**
+## Features
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/a68818cf-7add-4639-a40a-c4decfd9ecc0) and start prompting.
+- Donor / Recipient registration forms
+- Search and filtering by blood group, city, distance
+- Responsive UI using shadcn-ui + Tailwind
+- TypeScript for type safety
+- Ready for integration with REST or GraphQL APIs
 
-Changes made via Lovable will be committed automatically to this repo.
+## Tech stack
 
-**Use your preferred IDE**
+- Vite
+- React
+- TypeScript
+- Tailwind CSS
+- shadcn-ui (components)
+- Node.js & npm
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Getting started (local)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Prerequisites:
+- Node.js (16+ recommended)
+- npm or yarn
 
-Follow these steps:
+Steps:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+1. Install dependencies
+```bash
+npm install
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+2. Start dev server
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+3. Open the app
+- Visit http://localhost:5173 (or URL shown by Vite)
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Available scripts
 
-**Use GitHub Codespaces**
+- npm run dev — start development server
+- npm run build — produce optimized production build
+- npm run preview — preview production build locally
+- npm test — run unit tests (if configured)
+- npm run lint — run linters (if configured)
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Adjust scripts in package.json if different.
 
-## What technologies are used for this project?
+## Environment variables
 
-This project is built with:
+If the app calls external APIs (backend, maps, notifications), create a .env file at project root and add keys (example):
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```
+VITE_API_BASE_URL=https://api.example.com
+VITE_MAPS_API_KEY=your_maps_key
+```
 
-## How can I deploy this project?
+Restart the dev server after changing env vars.
 
-Simply open [Lovable](https://lovable.dev/projects/a68818cf-7add-4639-a40a-c4decfd9ecc0) and click on Share -> Publish.
+## Deployment
 
-## Can I connect a custom domain to my Lovable project?
+Build and deploy the app to your preferred static host:
 
-Yes, you can!
+1. Build:
+```bash
+npm run build
+```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+2. Deploy the contents of the `dist/` folder to:
+- Vercel, Netlify, GitHub Pages, or any static hosting
+- (If deploying to Azure Static Web Apps or Azure App Service, follow Azure best practices)
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## Contributing
+
+- Fork the repo
+- Create a feature branch
+- Open a pull request with a clear description
+- Keep commits small and focused
+
+## Notes
+
+- This README focuses on the frontend. If your project includes backend services, machine learning models, or Azure deployments, add a dedicated README or sections for those components with instructions and required environment variables.
+- Replace placeholder URLs and API keys with your actual services.
+
+## License & contact
+
+Specify your license (e.g., MIT) in LICENSE file.
+
+For questions or updates, open an issue or contact the repository owner.
