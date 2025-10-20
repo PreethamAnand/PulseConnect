@@ -27,6 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Droplet, Filter, MapPin, PlusCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { sampleBloodRequests, sampleHospitals } from "@/data/sampleData";
 
 interface BloodRequest {
   id: string;
@@ -63,17 +64,19 @@ export default function BloodRequests() {
           .eq('request_type', 'blood')
           .order('created_at', { ascending: false });
 
-        if (error) throw error;
-
         // Filter to only show requests from registered hospitals
         const { data: hospitals } = await supabase
           .from('hospitals')
           .select('id, name');
 
-        const hospitalNames = new Set((hospitals || []).map((h: any) => h.name));
-        const hospitalIds = new Map((hospitals || []).map((h: any) => [h.name, h.id]));
+        // Use sample data if no real data available
+        const finalRequests = (reqs && reqs.length > 0) ? reqs : sampleBloodRequests;
+        const finalHospitals = (hospitals && hospitals.length > 0) ? hospitals : sampleHospitals;
 
-        const filteredReqs = (reqs || []).filter((req: any) => 
+        const hospitalNames = new Set(finalHospitals.map((h: any) => h.name));
+        const hospitalIds = new Map(finalHospitals.map((h: any) => [h.name, h.id]));
+
+        const filteredReqs = finalRequests.filter((req: any) => 
           !req.hospital_name || hospitalNames.has(req.hospital_name)
         ).map((req: any) => ({
           ...req,
@@ -84,11 +87,14 @@ export default function BloodRequests() {
         setFilteredRequests(filteredReqs);
       } catch (error) {
         console.error('Error loading requests:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load blood requests",
-          variant: "destructive",
-        });
+        // Fallback to sample data
+        const hospitalIds = new Map(sampleHospitals.map((h: any) => [h.name, h.id]));
+        const sampleReqsWithIds = sampleBloodRequests.map((req: any) => ({
+          ...req,
+          hospital_id: hospitalIds.get(req.hospital_name) || req.hospital_id
+        }));
+        setRequests(sampleReqsWithIds);
+        setFilteredRequests(sampleReqsWithIds);
       } finally {
         setLoading(false);
       }

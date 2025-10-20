@@ -27,6 +27,7 @@ import HospitalDashboard from "./pages/hospital/HospitalDashboard";
 import NotFound from "./pages/NotFound";
 import Awareness from "./pages/learn/Awareness";
 import RequestPage from "./pages/Request";
+import ChatBot from "./components/ChatBot";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,6 +45,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <ChatBot />
           <Routes>
             <Route path="/" element={<Homepage />} />
             <Route path="/auth" element={<Auth />} />

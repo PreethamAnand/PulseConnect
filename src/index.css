@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -73,7 +72,7 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
-    
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 0 72.2% 50.6%;
@@ -99,11 +98,11 @@
   .blood-btn {
     @apply bg-blood hover:bg-blood-dark text-white font-semibold;
   }
-  
+
   .medical-btn {
     @apply bg-medical hover:bg-medical-dark text-white font-semibold;
   }
-  
+
   .emergency-pulse {
     @apply animate-pulse bg-red-100 border border-red-400;
   }

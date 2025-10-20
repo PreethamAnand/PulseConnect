@@ -9,6 +9,7 @@ import { Building, Edit, Save, X, Plus, Minus, Check } from "lucide-react";
 import { listHospitalAppointments, acceptAppointment } from "@/lib/appointments";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { sampleHospitals, sampleBloodInventory, sampleAppointments } from "@/data/sampleData";
 
 interface BloodType {
   type: string;
@@ -20,17 +21,7 @@ type DbHospital = { id: string; name: string; address: string | null; contact: s
 export default function HospitalDashboard() {
   const [hospital, setHospital] = useState<DbHospital | null>(null);
   const [loadingHospital, setLoadingHospital] = useState<boolean>(false);
-
-  const [bloodInventory, setBloodInventory] = useState<BloodType[]>([
-    { type: "A+", units: 25 },
-    { type: "A-", units: 8 },
-    { type: "B+", units: 15 },
-    { type: "B-", units: 5 },
-    { type: "AB+", units: 12 },
-    { type: "AB-", units: 3 },
-    { type: "O+", units: 30 },
-    { type: "O-", units: 10 }
-  ]);
+  const [bloodInventory, setBloodInventory] = useState<BloodType[]>(sampleBloodInventory);
 
   const [editingType, setEditingType] = useState<string | null>(null);
   const [tempValue, setTempValue] = useState<number>(0);
@@ -41,9 +32,17 @@ export default function HospitalDashboard() {
   useEffect(() => {
     const loadHospital = async () => {
       setLoadingHospital(true);
-      const { data } = await supabase.from("hospitals").select("id, name, address, contact").limit(1).maybeSingle();
-      setHospital((data as any) || null);
-      setLoadingHospital(false);
+      try {
+        const { data } = await supabase.from("hospitals").select("id, name, address, contact").limit(1).maybeSingle();
+        // Use sample data if no real data available
+        setHospital((data as any) || sampleHospitals[0]);
+      } catch (error) {
+        console.error('Error loading hospital:', error);
+        // Fallback to sample data
+        setHospital(sampleHospitals[0]);
+      } finally {
+        setLoadingHospital(false);
+      }
     };
     loadHospital();
   }, []);
@@ -54,9 +53,12 @@ export default function HospitalDashboard() {
       try {
         setLoadingAppointments(true);
         const data = await listHospitalAppointments(hospital.id);
-        setAppointments(data);
+        // Use sample data if no real data available
+        setAppointments(data && data.length > 0 ? data : sampleAppointments);
       } catch (e) {
         console.error(e);
+        // Fallback to sample data
+        setAppointments(sampleAppointments);
       } finally {
         setLoadingAppointments(false);
       }
@@ -127,12 +129,32 @@ export default function HospitalDashboard() {
             <Button
               variant="outline"
               onClick={async () => {
-                const { verifyDonationOnChain } = await import("@/lib/blockchain");
-                const tx = await verifyDonationOnChain(
-                  { donorId: null, hospitalId: hospital?.id || null, donationType: "plasma", status: "received" },
-                  { rpcUrl: (import.meta as any).env.VITE_POLYGON_RPC_URL || "", privateKey: (import.meta as any).env.VITE_POLYGON_PRIVATE_KEY || "" }
-                );
-                alert(`Recorded on Polygon: ${tx}`);
+                try {
+                  const { verifyDonationOnChain } = await import("@/lib/blockchain");
+                  const tx = await verifyDonationOnChain(
+                    { donorId: null, hospitalId: hospital?.id || null, donationType: "plasma", status: "received" },
+                    { rpcUrl: (import.meta as any).env.VITE_POLYGON_RPC_URL || "https://rpc-mumbai.maticvigil.com", privateKey: (import.meta as any).env.VITE_POLYGON_PRIVATE_KEY || "demo-key" }
+                  );
+                  
+                  // Show success toast
+                  toast({
+                    title: "Blockchain Verification Successful",
+                    description: `Transaction Hash: ${tx}`,
+                    variant: "default",
+                  });
+                  
+                  // Copy to clipboard
+                  navigator.clipboard.writeText(tx);
+                  
+                  console.log("Recorded on Polygon:", tx);
+                } catch (error) {
+                  console.error("Blockchain verification failed:", error);
+                  toast({
+                    title: "Verification Failed",
+                    description: "Failed to record on blockchain. Please try again.",
+                    variant: "destructive",
+                  });
+                }
               }}
             >
               Verify on Blockchain

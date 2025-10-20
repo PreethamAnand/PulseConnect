@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { samplePlasmaInventory, samplePlasmaRequests, sampleBlockchainTransactions } from "@/data/sampleData";
 
 interface PlasmaInventoryRow {
   hospital_id: string;

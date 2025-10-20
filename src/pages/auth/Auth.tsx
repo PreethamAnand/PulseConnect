@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from 'react-router-dom';
 import { Heart, ArrowLeft } from 'lucide-react';
 import OTPVerification from '@/components/OTPVerification';
+import HealthForm from '@/components/HealthForm';
 import { supabase } from '@/integrations/supabase/client';
 
 export default function Auth() {
@@ -22,11 +23,22 @@ export default function Auth() {
   const [donationType, setDonationType] = useState<'blood' | 'plasma'>('blood');
   const [loading, setLoading] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
+  const [showHealthForm, setShowHealthForm] = useState(false);
   const [otpPurpose, setOtpPurpose] = useState<'login' | 'verification' | 'registration'>('verification');
   
   const { signIn, signUp, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const handleHealthFormComplete = () => {
+    setShowHealthForm(false);
+    toast({
+      title: "Account Created Successfully!",
+      description: "Your donor profile has been completed. Welcome to PulseConnect!",
+      variant: "default",
+    });
+    navigate('/dashboard');
+  };
 
   useEffect(() => {
     if (user) {
@@ -220,11 +232,25 @@ export default function Auth() {
             <OTPVerification
               email={email}
               purpose={otpPurpose}
-              onVerified={() => { setShowOTP(false); navigate('/dashboard'); }}
+              onVerified={() => { 
+                setShowOTP(false); 
+                if (otpPurpose === 'registration') {
+                  setShowHealthForm(true);
+                } else {
+                  navigate('/dashboard'); 
+                }
+              }}
               onCancel={() => setShowOTP(false)}
             />
           </div>
         </div>
+      )}
+
+      {showHealthForm && (
+        <HealthForm
+          onComplete={handleHealthFormComplete}
+          onCancel={() => setShowHealthForm(false)}
+        />
       )}
     </div>
   );

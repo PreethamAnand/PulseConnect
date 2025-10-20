@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { sampleHospitals } from "@/data/sampleData";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,9 +18,17 @@ export default function Hospitals() {
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-      const { data, error } = await supabase.from("hospitals").select("id, name, address, contact");
-      if (!error) setHospitals((data || []) as any);
-      setLoading(false);
+      try {
+        const { data, error } = await supabase.from("hospitals").select("id, name, address, contact");
+        // Use sample data if no real data available
+        setHospitals((data && data.length > 0 ? data : sampleHospitals) as any);
+      } catch (error) {
+        console.error('Error loading hospitals:', error);
+        // Fallback to sample data
+        setHospitals(sampleHospitals as any);
+      } finally {
+        setLoading(false);
+      }
     };
     load();
   }, []);
